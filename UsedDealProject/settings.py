@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # rest_framework
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+	'rest_framework_simplejwt.token_blacklist',
 
     # app
     'core',
@@ -148,7 +150,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         # 'rest_framework_simplejwt.authentication.JWTAuthentication', 
@@ -160,14 +163,14 @@ REST_FRAMEWORK = {
     ]
 }
 
-## JWT
-# 추가적인 JWT_AUTH 설정, 상단에 import datetime 해주기 
-JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY,
-    'JWT_ALGORITHM': 'HS256', # 암호화 알고리즘
-    'JWT_ALLOW_REFRESH': True, # refresh 사용 여부
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7), # 유효기간 설정
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28), # JWT 토큰 갱신 유효기간
+REST_USE_JWT = True
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'TOKEN_USER_CLASS': 'user.User',
 }
 
 

@@ -1,23 +1,26 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.serializers import UserCreateSerializer, UserLoginSerializer
 from rest_framework.permissions import AllowAny
 
 # Create your views here.
 #회원 가입
-@api_view(['POST']) 
-def signup(request):
-    print(request.data)
-    serializer = UserCreateSerializer(data=request.data) 
-    if serializer.is_valid(raise_exception=True): #잘못된 요청이 들어왔을 때, 사용자에게 적절한 응답을 보내기 위해 .is_valid() 의 인자에 raise_exception=True 입력
-        serializer.save() # DB 저장
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class SignupView(APIView):
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 #로그아웃 
 #다른 회원 정보
@@ -49,4 +52,3 @@ class UserApiView(APIView):
     #계정 비활성화
     def delete(self, request):
         return Response({'msg':'delete success'})
-
