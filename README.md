@@ -13,4 +13,4 @@ https://hayongwoon.tistory.com/120
 - 판매 목록
 - 거래 성사 시 판매자 및 거래 평가 -> 유저의 신뢰도를 
 
-* 추후 DM기능 고
+* 추후 DM기능 고려
