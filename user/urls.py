@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenVerifyView
 
 urlpatterns = [
     path('login/', UserLoginView.as_view()),
-    path('signup/', UserApiView.as_view()),
+    path('', UserApiView.as_view()),
 
     # 토큰
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -7,8 +7,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
+from user import serializers
 
 from user.serializers import UserSerializer, UserLoginSerializer
+from user.models import User as UserModel
 
 
 # Create your views here.
@@ -24,7 +26,11 @@ class UserApiView(APIView):
             
     #회원 정보
     def get(self, request):
-        return Response({'msg':'get success'})
+        # user = request.user
+        user = UserModel.objects.get(id=1) #test user
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     #회원 정보 수정
     def put(self, request):
