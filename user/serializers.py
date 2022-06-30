@@ -1,12 +1,14 @@
+from dataclasses import field
 from django.urls import is_valid_path
 from rest_framework import serializers
 from user.models import User as UserModel
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
+from . import models
 
 
-class UserCreateSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
 
@@ -26,14 +28,27 @@ class UserCreateSerializer(serializers.ModelSerializer):
 JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=64)
-    password = serializers.CharField(max_length=128, write_only=True)
+class UserLoginSerializer(serializers.ModelSerializer):
     token = serializers.CharField(max_length=255, read_only=True)
 
+    class Meta:
+        model = UserModel
+        fields = ["username", "password", "token"]
+        extra_kwargs = {
+            'username': {
+                'error_messages':{'required': 'ID를 입력하세요'},
+                },
+
+            'password': {
+                'write_only': True,
+                'error_messages': {'required': '비밀번호를 입력해주세요.'},
+                },
+        }
+
     def validate(self, data):
-        username = data.get("username", None)
-        password = data.get("password", None)
+        username = data.get("username")
+        password = data.get("password")
+
         user = authenticate(username=username, password=password)
 
         if user is None:
@@ -53,3 +68,4 @@ class UserLoginSerializer(serializers.Serializer):
             'username': user.username,
             'token': jwt_token
         }
+

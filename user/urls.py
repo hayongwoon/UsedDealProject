@@ -1,14 +1,14 @@
 from django.urls import path
 from user import views
-from user.views import UserApiView, SignupView
+from user.views import UserApiView, UserLoginView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.views import TokenVerifyView
 
 
 urlpatterns = [
-    path('login/', UserApiView.as_view()),
-    path('signup/', SignupView.as_view()),
+    path('login/', UserLoginView.as_view()),
+    path('signup/', UserApiView.as_view()),
 
     # 토큰
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
