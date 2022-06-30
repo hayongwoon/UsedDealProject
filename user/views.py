@@ -1,3 +1,4 @@
+from functools import partial
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
@@ -27,14 +28,23 @@ class UserApiView(APIView):
     #회원 정보
     def get(self, request):
         # user = request.user
-        user = UserModel.objects.get(id=16) #test user
+        user = UserModel.objects.get(id=18) #test user
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     #회원 정보 수정
     def put(self, request):
-        return Response({'msg':'put success'})
+        # user = request.user
+        # if user.is_anonymous:
+        #     return Response({"error": "로그인 후 수정 가능합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = UserModel.objects.get(id=16) #test user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     #회원 탈퇴 - 계정 비활성화
     def delete(self, request):
