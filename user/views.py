@@ -21,7 +21,7 @@ class UserApiView(APIView):
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+            
     #회원 정보
     def get(self, request):
         return Response({'msg':'get success'})
@@ -40,7 +40,7 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=True):
-            return Response(serializer.error_messages, status=status.HTTP_409_CONFLICT)
+            return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
         if serializer.validated_data['username'] == "None": # username required
             return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
 

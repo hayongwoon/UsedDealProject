@@ -29,25 +29,17 @@ JWT_PAYLOAD_HANDLER = api_settings.JWT_PAYLOAD_HANDLER
 JWT_ENCODE_HANDLER = api_settings.JWT_ENCODE_HANDLER
 
 class UserLoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=64)
+    password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
 
     class Meta:
         model = UserModel
         fields = ["username", "password", "token"]
-        extra_kwargs = {
-            'username': {
-                'error_messages':{'required': 'ID를 입력하세요'},
-                },
-
-            'password': {
-                'write_only': True,
-                'error_messages': {'required': '비밀번호를 입력해주세요.'},
-                },
-        }
 
     def validate(self, data):
-        username = data.get("username")
-        password = data.get("password")
+        username = data.get("username", None)
+        password = data.get("password", None)
 
         user = authenticate(username=username, password=password)
 
