@@ -43,4 +43,9 @@ class SingleProductApiView(APIView):
 
     # 상품 삭제
     def delete(self, request, obj_id):
-        return Response({"msg":"delete success"})
+        try:
+            ProductModel.objects.get(id=obj_id).delete()
+            return Response({"message":"상품이 삭제되었습니다."})
+        except:
+            return Response({"message":"이미 삭제 된 상품입니다."})
+        
