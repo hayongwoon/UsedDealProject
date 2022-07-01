@@ -9,6 +9,7 @@ from rest_framework import status
 from product.serializers import ProductSerializer
 from product.models import Product as ProductModel
 
+
 # Create your views here.
 class ProductApiView(APIView):
     # 상품 등록
@@ -24,10 +25,17 @@ class ProductApiView(APIView):
         products = ProductModel.objects.filter(is_active=True).order_by('-register_date')
         return Response(ProductSerializer(products, many=True).data, status=status.HTTP_200_OK)
 
+
+class SingleProductApiView(APIView):
+    # 단일 상품 조회
+    def get(self, request, obj_id):
+        product = ProductModel.objects.get(id=obj_id)
+        return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
+
     # 등록한 상품 수정
-    def put(self, request):
+    def put(self, request, obj_id):
         return Response({"msg":"put success"})
 
-    # 상품 삭제(비활성화)
-    def delete(self, request):
+    # 상품 삭제
+    def delete(self, request, obj_id):
         return Response({"msg":"delete success"})
