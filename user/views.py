@@ -1,7 +1,7 @@
 from functools import partial
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-from django.http import JsonResponse
+from django.contrib.auth import logout
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,7 +28,7 @@ class UserApiView(APIView):
     #회원 정보
     def get(self, request):
         # user = request.user
-        user = UserModel.objects.get(id=18) #test user
+        user = UserModel.objects.get(id=16) #test user
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -48,7 +48,11 @@ class UserApiView(APIView):
 
     #회원 탈퇴 - 계정 비활성화
     def delete(self, request):
-        return Response({'msg':'delete success'})
+        # user = request.user
+        user = UserModel.objects.get(id=14) #test user
+        UserModel.objects.filter(id=user.id).update(is_active=False) #test user
+
+        return Response({'msg':'계정이 삭제 되었습니다.'})
 
 
 class UserLoginView(APIView):
