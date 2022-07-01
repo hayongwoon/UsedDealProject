@@ -33,7 +33,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         get_categorylist = validated_data.pop("get_categorylist", [])
-        print(get_categorylist)
+
         # product 객체 생성
         product = ProductModel(**validated_data)
         # product.user = self.context["request"].user
