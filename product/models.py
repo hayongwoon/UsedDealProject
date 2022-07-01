@@ -15,3 +15,6 @@ class Product(models.Model):
     like_cnt = models.IntegerField('좋아요 수', default=0)
     register_date = models.DateTimeField("등록일", auto_now_add=True)
     is_active = models.BooleanField("활성화 여부", default=True)
+
+    def __str__(self):
+        return f'판매자: {self.user}, 제목: {self.title}, 분류: {self.category}'
