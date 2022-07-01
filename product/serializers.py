@@ -22,12 +22,25 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    category = CategorySerializer(read_only=True)
-    get_categorylist = serializers.ListField(write_only=True, many=True)
-    register_date = serializers.DateTimeField(auto_now_add=True)
+    category = CategorySerializer(read_only=True, many=True)
+    get_categorylist = serializers.ListField(write_only=True)
     
     class Meta:
         model = ProductModel
 
-        fields = ["user", "title", "content", "thumbnail", "category", "get_categorylist", "like_cnt", "register_date"]
+        fields = ["user", "title", "content", "thumbnail", "category", "get_categorylist", "like_cnt"]
         read_only_fields = ['like_cnt']
+
+    def create(self, validated_data):
+        get_categorylist = validated_data.pop("get_categorylist", [])
+        print(get_categorylist)
+        # product 객체 생성
+        product = ProductModel(**validated_data)
+        # product.user = self.context["request"].user
+        product.user = UserModel.objects.get(id=16) #test user
+        product.save()
+
+        product.category.add(*get_categorylist)
+        product.save()
+
+        return product
