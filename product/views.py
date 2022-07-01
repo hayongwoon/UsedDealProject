@@ -34,7 +34,12 @@ class SingleProductApiView(APIView):
 
     # 등록한 상품 수정
     def put(self, request, obj_id):
-        return Response({"msg":"put success"})
+        product = ProductModel.objects.get(id=obj_id)
+        serializer = ProductSerializer(product, data=request.data ,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+        return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
 
     # 상품 삭제
     def delete(self, request, obj_id):

@@ -44,3 +44,14 @@ class ProductSerializer(serializers.ModelSerializer):
         product.save()
 
         return product
+
+    def update(self, instance, validated_data):
+        get_categorylist = validated_data.pop("get_categorylist", [])
+
+        for k, v in validated_data.items():
+            setattr(instance, k, v)
+        instance.save()
+
+        instance.category.set(get_categorylist)
+
+        return instance
