@@ -48,4 +48,5 @@ class SingleProductApiView(APIView):
             return Response({"message":"상품이 삭제되었습니다."})
         except:
             return Response({"message":"이미 삭제 된 상품입니다."})
-        
+
+# 사용자의 판매 목록
