@@ -27,8 +27,8 @@ class UserApiView(APIView):
             
     #회원 정보
     def get(self, request):
-        # user = request.user
-        user = UserModel.objects.get(id=16) #test user
+        user = request.user
+        # user = UserModel.objects.get(id=16) #test user
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
