@@ -1,17 +1,18 @@
+from functools import partial
 from django.shortcuts import render
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from product_comment.serializers import CommentSerializer
+from user.models import User as UserModel
 
 # Create your views here.
-class CreateProductCommentApiView(APIView):
+class ProductCommentApiView(APIView):
     # 댓글 생성
-    def post(self, request):
-        return Response({"msg":"post good!"})
+    def post(self, request, product_id):
+        return Response({"msg":"댓글 생성"})
 
-
-class ProductAllCommentsApiView(APIView):
     # 해당 상품의 달린 모든 댓글 보기
     def get(self, request, product_id):
         return Response({"msg":"해당 상품의 달린 모든 댓글"})
