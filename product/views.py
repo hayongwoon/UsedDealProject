@@ -1,17 +1,38 @@
 from functools import partial
 from multiprocessing import context
 from django.shortcuts import render
+import datetime
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.permissions import BasePermission
 
 from product.serializers import ProductSerializer
 from product.models import Product as ProductModel
 
 
+class IsRegisterdMoreThanTwoRliabilityPoint(BasePermission):
+    """
+    거래 신뢰도가 2 보다 높은 사용자는 쓰기, 수정, 삭제 가능
+    이외에는 조회만 가능
+    """
+    SAFE_METHODS = ('GET', )
+    message = '접근 권한이 없습니다.'
+
+    def has_permission(self, request, view):
+        user = request.user
+
+        if request.method in self.SAFE_METHODS or \
+            user.is_authenticated and request.user.deal_reliability_avg > 2:
+
+            return True
+
+        return False
+
 # Create your views here.
 class ProductApiView(APIView):
+    permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
     # 상품 등록
     def post(self, request):
         serializer = ProductSerializer(data=request.data, context={'request': request}, partial=True)
@@ -27,6 +48,7 @@ class ProductApiView(APIView):
 
 
 class SingleProductApiView(APIView):
+    permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
     # 단일 상품 조회
     def get(self, request, obj_id):
         product = ProductModel.objects.get(id=obj_id)
