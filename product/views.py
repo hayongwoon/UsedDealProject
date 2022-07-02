@@ -56,6 +56,3 @@ class SellingListApiView(APIView):
     def get(self, request, user_id):
         user_products = ProductModel.objects.filter(user=user_id).order_by('-register_date') 
         return Response(ProductSerializer(user_products, many=True).data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        return Response({'msg':'post good'})
