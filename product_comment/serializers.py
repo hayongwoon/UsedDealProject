@@ -24,6 +24,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
         return comment
 
+    
+
 
 class ProductCommentSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
