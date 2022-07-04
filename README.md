@@ -12,14 +12,12 @@
 - product_comment
     - 상품, 작성자, 내용
 
-- product_comment_comment
-    - 댓글, 작성자, 내용
+- success_deal
+    - 판매자, 구매자, 상품, 거래 만족도(신뢰도) 점수
 
 - product_like
     - 사용자, 상품
 
-- deal
-    - 구매자, 상품, 신뢰도
 
 ## VEIW
 - user
@@ -37,10 +35,7 @@
 - comment
     - 상품에 댓글 생성, 수정, 삭제, 조회
 
-- comment_comment
-    - 상품 댓글의 댓글 생성, 수정, 삭제, 조회
-
-- deal
+- success_deal
     - 거래가 완료되면 판매자는 구매자에게 거래 완료 요청을 보내고 구매자는 요청 수락 후 판매자 신뢰도 점수 부여
 
 
