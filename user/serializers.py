@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 
 
+
 class WatchListSerializer(serializers.ModelSerializer):
     class Meta:
         model = WatchListModel

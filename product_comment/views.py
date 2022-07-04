@@ -1,4 +1,5 @@
 from functools import partial
+from multiprocessing import context
 from django.shortcuts import render
 
 from rest_framework.response import Response
@@ -11,7 +12,12 @@ from user.models import User as UserModel
 class ProductCommentApiView(APIView):
     # 댓글 생성
     def post(self, request, product_id):
-        return Response({"msg":"댓글 생성"})
+        serializer = CommentSerializer(data=request.data, context={'request':request, 'product_id':product_id}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
 
     # 해당 상품의 달린 모든 댓글 보기
     def get(self, request, product_id):
