@@ -28,7 +28,8 @@ class ProductCommentApiView(APIView):
             product = ProductModel.objects.get(id=product_id)
             serializer = ProductCommentSerializer(product)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
+
+        except ProductModel.DoesNotExist:
             return Response({"msg":"게시글이 존재하지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -39,19 +40,29 @@ class SingleProductCommentApiView(APIView):
             comment = CommentModel.objects.get(id=obj_id)
             serializer = CommentSerializer(comment)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response({"msg":"해당 댓글은 존재하지 않습니다."})
+
+        except CommentModel.DoesNotExist:
+            return Response({"msg":"해당 댓글은 존재하지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 댓글 수정
     def put(self, request, obj_id):
-        return Response({"msg":"put good!"})
+        try:
+            comment = CommentModel.objects.get(id=obj_id)
+            serializer = CommentSerializer(comment, data=request.data,  partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+
+        except CommentModel.DoesNotExist:
+            return Response({'msg':'존재하지 않는 댓글입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # 댓글 삭제
     def delete(self, request, obj_id):
         try:
             CommentModel.objects.get(id=obj_id).delete()
             return Response({"msg":"댓글이 삭제되었습니다."})
-        except:
-            return Response({"msg":"이미 삭제 된 댓글입니다."})
+            
+        except CommentModel.DoesNotExist:
+            return Response({"msg":"이미 삭제 된 댓글입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         
