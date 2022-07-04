@@ -30,24 +30,34 @@ class SingleProductApiView(APIView):
     # permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
     # 단일 상품 조회
     def get(self, request, obj_id):
-        product = ProductModel.objects.get(id=obj_id)
-        return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
+        try:
+            product = ProductModel.objects.get(id=obj_id)
+            return Response(ProductSerializer(product).data, status=status.HTTP_200_OK)
+
+        except ProductModel.DoesNotExist:
+            return Response({"msg": "존재하지 않는 상품 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 등록한 상품 수정
     def put(self, request, obj_id):
-        product = ProductModel.objects.get(id=obj_id)
-        serializer = ProductSerializer(product, data=request.data ,partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
-        return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            product = ProductModel.objects.get(id=obj_id)
+            serializer = ProductSerializer(product, data=request.data ,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+            else:
+                Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+
+        except ProductModel.DoesNotExist:
+            return Response({"msg": "존재하지 않는 상품 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 상품 삭제
     def delete(self, request, obj_id):
         try:
             ProductModel.objects.get(id=obj_id).delete()
             return Response({"message":"상품이 삭제되었습니다."})
-        except:
+
+        except ProductModel.DoesNotExist:
             return Response({"message":"이미 삭제 된 상품입니다."})
 
 
