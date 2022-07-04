@@ -5,8 +5,10 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from product_comment.serializers import CommentSerializer
+from product_comment.serializers import CommentSerializer, ProductCommentSerializer
+
 from user.models import User as UserModel
+from product.models import Product as ProductModel
 
 # Create your views here.
 class ProductCommentApiView(APIView):
@@ -21,7 +23,10 @@ class ProductCommentApiView(APIView):
 
     # 해당 상품의 달린 모든 댓글 보기
     def get(self, request, product_id):
-        return Response({"msg":"해당 상품의 달린 모든 댓글"})
+        product = ProductModel.objects.get(id=product_id)
+        serializer = ProductCommentSerializer(product)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SingleProductCommentApiView(APIView):

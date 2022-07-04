@@ -10,12 +10,14 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentModel
 
-        fields = ["article", "user", "content"]
+        fields = ["user", "content", "created"]
+        read_only_fields = ['created']
+
 
     def create(self, validated_data):
         comment = CommentModel(**validated_data)
         # comment.user = self.context['request'].user
-        comment.user = UserModel.objects.get(id=3)
+        comment.user = UserModel.objects.get(id=3) # test user
         comment.article = ProductModel.objects.get(id=self.context['product_id'])
 
         comment.save()
@@ -23,5 +25,14 @@ class CommentSerializer(serializers.ModelSerializer):
         return comment
 
 
+class ProductCommentSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField()
+    def get_comments(self, obj):
+        comments = obj.comment_article
+        return CommentSerializer(comments, many=True).data
 
+    class Meta:
+        model = ProductModel
+
+        fields = ["user", "title", "content", "thumbnail", "category", "like_cnt", "comments"]
         
