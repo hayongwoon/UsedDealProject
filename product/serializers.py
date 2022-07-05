@@ -38,6 +38,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True, many=True)
     get_categorylist = serializers.ListField(write_only=True)
     comments = serializers.SerializerMethodField()
+    
     def get_comments(self, obj):
         comments = obj.comment_article
         return CommentSerializer(comments, many=True).data
