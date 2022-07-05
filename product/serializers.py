@@ -24,10 +24,10 @@ class CommentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     user_reliability_avg = serializers.SerializerMethodField(read_only=True)
     def get_user_reliability_avg(self, obj):
-        reviews = obj.successdeal_set
+        reviews = obj.deal_seller
         reviews_avg = reviews.aggregate(avg=Avg('rating'))["avg"]
-        print(reviews_avg)
-        return reviews_avg
+
+        return '{:.2f}'.format(reviews_avg)
 
     class Meta:
         model = UserModel

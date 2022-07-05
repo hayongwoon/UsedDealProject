@@ -70,4 +70,4 @@ class UserLoginView(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
 
-# 사용자가 좋아요한 물건들 보기
+# 사용자가 좋아요한 prouducts 보기
