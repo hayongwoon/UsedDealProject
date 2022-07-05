@@ -69,3 +69,5 @@ class UserLoginView(APIView):
             'token': serializer.data['token'] # 시리얼라이저에서 받은 토큰 전달
         }
         return Response(response, status=status.HTTP_200_OK)
+
+# 사용자가 좋아요한 물건들 보기
