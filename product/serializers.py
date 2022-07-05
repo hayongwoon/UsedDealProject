@@ -6,6 +6,8 @@ from product_comment.models import Comment as CommentModel
 
 from rest_framework import serializers
 
+from django.db.models import Avg
+
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -20,10 +22,17 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    user_reliability_avg = serializers.SerializerMethodField(read_only=True)
+    def get_user_reliability_avg(self, obj):
+        reviews = obj.successdeal_set
+        reviews_avg = reviews.aggregate(avg=Avg('rating'))["avg"]
+        print(reviews_avg)
+        return reviews_avg
+
     class Meta:
         model = UserModel
 
-        fields = ["username", "phone", "deal_reliability_avg"]
+        fields = ["username", "phone", "user_reliability_avg"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
