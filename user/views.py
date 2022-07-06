@@ -30,11 +30,15 @@ class CreateUserApiView(APIView):
 class UserProfileApiVeiw(APIView):    
     #회원 정보
     def get(self, request, user_id):
-        # user = request.user
-        user = UserModel.objects.get(id=user_id) #test user
-        serializer = UserSerializer(user)
+        try:
+            user = UserModel.objects.get(id=user_id)
+            if user.is_active:
+                serializer = UserSerializer(user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"msg":"비활성화 계정입니다."})
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserModel.DoesNotExist:
+            return Response({"msg":"존재하지 않는 회원입니다."})
 
     #회원 정보 수정
     def put(self, request, user_id):
@@ -63,6 +67,7 @@ class UserProfileApiVeiw(APIView):
 
     #회원 탈퇴 - 계정 비활성화
     def delete(self, request, user_id):
+        # 로그인 확인 후 처리
         # user = request.user
         user = UserModel.objects.get(id=user_id) #test user
         UserModel.objects.filter(id=user.id).update(is_active=False) #test user
