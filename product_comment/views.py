@@ -33,7 +33,7 @@ class ProductCommentApiView(APIView):
 
 class SingleProductCommentApiView(APIView):
     # 단일 댓글 조회
-    def get(self, request, obj_id):
+    def get(self, request, product_id, obj_id):
         try:
             comment = CommentModel.objects.get(id=obj_id)
             serializer = CommentSerializer(comment)
@@ -43,7 +43,7 @@ class SingleProductCommentApiView(APIView):
             return Response({"msg":"해당 댓글은 존재하지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 댓글 수정
-    def put(self, request, obj_id):
+    def put(self, request, product_id, obj_id):
         try:
             comment = CommentModel.objects.get(id=obj_id)
             serializer = CommentSerializer(comment, data=request.data,  partial=True)
@@ -55,7 +55,7 @@ class SingleProductCommentApiView(APIView):
             return Response({'msg':'존재하지 않는 댓글입니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # 댓글 삭제
-    def delete(self, request, obj_id):
+    def delete(self, request, product_id, obj_id):
         try:
             CommentModel.objects.get(id=obj_id).delete()
             return Response({"msg":"댓글이 삭제되었습니다."})

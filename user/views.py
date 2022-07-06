@@ -8,10 +8,11 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
-from user import serializers
 
-from user.serializers import UserSerializer, UserLoginSerializer
+from user.serializers import UserSerializer, UserLoginSerializer, ProductSerializer
 from user.models import User as UserModel
+
+from product.models import Product as ProductModel
 
 
 # Create your views here.
@@ -69,5 +70,13 @@ class UserLoginView(APIView):
             'token': serializer.data['token'] # 시리얼라이저에서 받은 토큰 전달
         }
         return Response(response, status=status.HTTP_200_OK)
+
+
+# 사용자의 판매 목록
+class UserSellingListApiView(APIView):
+    def get(self, request, user_id):
+        user_products = ProductModel.objects.filter(user=user_id).order_by('-register_date') 
+        return Response(ProductSerializer(user_products, many=True).data, status=status.HTTP_200_OK)
+
 
 # 사용자가 좋아요한 prouducts 보기

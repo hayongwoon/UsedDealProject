@@ -1,6 +1,6 @@
 from django.urls import path
 
-from user.views import UserApiView, UserLoginView
+from user.views import UserApiView, UserLoginView, UserSellingListApiView
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -10,6 +10,9 @@ from rest_framework_simplejwt.views import TokenVerifyView
 urlpatterns = [
     path('login/', UserLoginView.as_view()),
     path('', UserApiView.as_view()),
+
+    # 판매 리스트
+    path('<user_id>/sellinglist/', UserSellingListApiView.as_view()),
 
     # 토큰
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

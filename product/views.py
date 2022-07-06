@@ -61,8 +61,3 @@ class SingleProductApiView(APIView):
             return Response({"message":"이미 삭제 된 상품입니다."})
 
 
-class SellingListApiView(APIView):
-    # 사용자의 판매 목록
-    def get(self, request, user_id):
-        user_products = ProductModel.objects.filter(user=user_id).order_by('-register_date') 
-        return Response(ProductSerializer(user_products, many=True).data, status=status.HTTP_200_OK)

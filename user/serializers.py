@@ -4,6 +4,8 @@ from rest_framework import serializers
 from user.models import User as UserModel
 from user.models import UserProfile as UserProfileModel
 from user.models import WatchList as WatchListModel
+from product.models import Product as ProductModel
+
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
@@ -115,3 +117,11 @@ class UserLoginSerializer(serializers.ModelSerializer):
             'token': jwt_token
         }
 
+
+class ProductSerializer(serializers.ModelSerializer):
+    category = WatchListSerializer(read_only=True, many=True)
+    
+    class Meta:
+        model = ProductModel
+
+        fields = ["title", "content", "thumbnail", "category", "like_cnt"]
