@@ -61,7 +61,7 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         userprofile = validated_data.pop('userprofile')
         get_watchlist = userprofile.pop('get_watchlist', [])
-
+        
         for key, value in validated_data.items():
             if key == "password":
                 instance.set_password(value)

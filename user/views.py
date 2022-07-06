@@ -16,7 +16,7 @@ from product.models import Product as ProductModel
 
 
 # Create your views here.
-class UserApiView(APIView):
+class CreateUserApiView(APIView):
     #회원 가입
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -26,31 +26,45 @@ class UserApiView(APIView):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
             
+    
+class UserProfileApiVeiw(APIView):    
     #회원 정보
-    def get(self, request):
-        user = request.user
-        # user = UserModel.objects.get(id=16) #test user
+    def get(self, request, user_id):
+        # user = request.user
+        user = UserModel.objects.get(id=user_id) #test user
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     #회원 정보 수정
-    def put(self, request):
-        # user = request.user
-        # if user.is_anonymous:
-        #     return Response({"error": "로그인 후 수정 가능합니다."}, status=status.HTTP_400_BAD_REQUEST)
-
-        user = UserModel.objects.get(id=16) #test user
+    def put(self, request, user_id):
+        user = UserModel.objects.get(id=user_id) #test user
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # user = request.user
+        # if user.is_anonymous:
+        #     return Response({"error": "로그인 후 수정 가능합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # if request.user.pk == user_id: # 로그인 한 사용자가 본인 프로필 수정을 할 때만 가능
+        #     # user = UserModel.objects.get(id=user_id) #test user
+        #     serializer = UserSerializer(user, data=request.data, partial=True)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # else:
+        #     return Response({"msg":"사용자 본인만 수정이 가능합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     #회원 탈퇴 - 계정 비활성화
-    def delete(self, request):
+    def delete(self, request, user_id):
         # user = request.user
-        user = UserModel.objects.get(id=14) #test user
+        user = UserModel.objects.get(id=user_id) #test user
         UserModel.objects.filter(id=user.id).update(is_active=False) #test user
 
         return Response({'msg':'계정이 삭제 되었습니다.'})
@@ -79,4 +93,12 @@ class UserSellingListApiView(APIView):
         return Response(ProductSerializer(user_products, many=True).data, status=status.HTTP_200_OK)
 
 
-# 사용자가 좋아요한 prouducts 보기
+# 사용자의 구매 목록
+class UserPurchaseListApiView(APIView):
+    def get(self, request, user_id):
+        return Response({"msg":"사용자 구매 목록 조회"})
+
+# 사용자의 좋아요 목록
+class UserLikeListApiView(APIView):
+    def get(self, request, user_id):
+        return Response({"msg":"사용자 좋아요 목록 조회"})

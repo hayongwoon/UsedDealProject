@@ -55,7 +55,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
 
-        fields = ["user", "title", "content", "thumbnail", "category", "get_categorylist", "like_cnt", "comments"]
+        fields = ["user", "title", "content", "thumbnail", "category", "get_categorylist", "like_cnt", "comments", "is_active"]
         read_only_fields = ['like_cnt']
 
     def create(self, validated_data):

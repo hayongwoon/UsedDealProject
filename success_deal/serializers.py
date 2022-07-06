@@ -22,4 +22,6 @@ class SuccessDealSerializer(serializers.ModelSerializer):
 
         success_deal.save()
 
+        ProductModel.objects.filter(id=self.context['product_id']).update(is_active=False)
+
         return success_deal
