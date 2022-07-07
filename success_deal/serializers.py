@@ -13,8 +13,7 @@ class SuccessDealSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         success_deal = SuccessDealModel(**validated_data)
-        # comment.user = self.context['request'].user
-        success_deal.buyer = UserModel.objects.get(id=5) # test user
+        success_deal.buyer = self.context['request'].user
 
         seller_id = ProductModel.objects.get(id=self.context['product_id']).user.id
         success_deal.seller = UserModel.objects.get(id=seller_id)
