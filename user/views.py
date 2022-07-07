@@ -1,19 +1,23 @@
 from functools import partial
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import authentication
 
 from user.serializers import UserSerializer, UserLoginSerializer, ProductSerializer
 from user.models import User as UserModel
 
 from product.models import Product as ProductModel
+from rest_framework.permissions import IsAuthenticated
 
+
+from rest_framework.decorators import permission_classes
 
 # Create your views here.
 class CreateUserApiView(APIView):
@@ -30,6 +34,7 @@ class CreateUserApiView(APIView):
 class UserProfileApiVeiw(APIView):    
     #회원 정보
     def get(self, request, user_id):
+        print(request.user)
         try:
             user = UserModel.objects.get(id=user_id)
             if user.is_active:
@@ -104,6 +109,8 @@ class UserPurchaseListApiView(APIView):
         return Response({"msg":"사용자 구매 목록 조회"})
 
 # 사용자의 좋아요 목록
+@permission_classes([IsAuthenticated])
 class UserLikeListApiView(APIView):
     def get(self, request, user_id):
+        print(request.user)
         return Response({"msg":"사용자 좋아요 목록 조회"})

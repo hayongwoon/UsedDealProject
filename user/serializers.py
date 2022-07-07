@@ -98,7 +98,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         password = data.get("password", None)
 
         user = authenticate(username=username, password=password)
-
+        print(user)
         if user is None:
             return {
                 'username': 'None'
