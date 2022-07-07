@@ -55,7 +55,6 @@ class UserLogoutApiView(APIView):
 
 class UserProfileApiVeiw(APIView):    
     def get(self, request, user_id):
-        print(request.user)
         try:
             user = UserModel.objects.get(id=user_id)
             if user.is_active:
@@ -68,7 +67,6 @@ class UserProfileApiVeiw(APIView):
 
     def put(self, request, user_id):
         user = request.user
-        print(user)
         if user.is_anonymous:
             return Response({"error": "로그인 후 수정 가능합니다."}, status=status.HTTP_400_BAD_REQUEST)
 

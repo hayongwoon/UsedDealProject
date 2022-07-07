@@ -1,17 +1,17 @@
 from dataclasses import field
 from django.urls import is_valid_path
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import update_last_login
+
 from rest_framework import serializers
+from rest_framework_jwt.settings import api_settings
+
 from user.models import User as UserModel
 from user.models import UserProfile as UserProfileModel
 from user.models import WatchList as WatchListModel
 from product.models import Product as ProductModel
 from product_like.models import Like as LikeModel
 from success_deal.models import SuccessDeal as SuccessDealModel
-
-from rest_framework_jwt.settings import api_settings
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import update_last_login
-
 
 
 class WatchListSerializer(serializers.ModelSerializer):
@@ -49,7 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
             phone=validated_data['phone'],
             fullname=validated_data['fullname'],
         )
-        #비밀번호 해시를 위해 set_password
+
         user.set_password(validated_data['password'])
         user.save()
 
@@ -72,11 +72,9 @@ class UserSerializer(serializers.ModelSerializer):
             setattr(instance, key, value)
         instance.save() 
 
-        # update는 아이디를 반환한다. 따라서 해당 아이디로 객체를 생성해주고 아래 watchlist를 업데이트!
         userprofile_id = UserProfileModel.objects.filter(user=instance).update(**userprofile)
         userprofile = UserProfileModel.objects.get(id=userprofile_id)
-        
-        # set함수는 언패킹을 하지 않고, 리스트 형태의 파라미터를 받아 수정 가능!
+
         userprofile.watchlist.set(get_watchlist)
         userprofile.save()
 
