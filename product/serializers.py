@@ -6,7 +6,7 @@ from product_comment.models import Comment as CommentModel
 
 from rest_framework import serializers
 
-from django.db.models import Avg
+from django.db.models import Avg, Count
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -26,8 +26,11 @@ class UserSerializer(serializers.ModelSerializer):
     def get_user_reliability_avg(self, obj):
         reviews = obj.deal_seller
         reviews_avg = reviews.aggregate(avg=Avg('rating'))["avg"]
-        if reviews_avg:
-            return '{:.2f}'.format((reviews_avg + obj.deal_reliability_avg)/2)
+        reviews_cnt = reviews.aggregate(cnt=Count('rating'))["cnt"]
+
+        # user는 초기 생성 시 default로 신뢰도 점수가 5이다. 추후 리뷰를 통해 받는 점수와 합하여 평균을 내기 위함.
+        if reviews_cnt:
+            return '{:.2f}'.format(((reviews_avg * reviews_cnt) + obj.deal_reliability_avg) / (reviews_cnt + 1))
         else:
             return obj.deal_reliability_avg
 
@@ -57,7 +60,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
 
-        fields = ["user", "title", "content", "thumbnail", "category", "get_categorylist", "like_cnt", "comments", "is_active"]
+        fields = ["is_active", "user", "title", "content", "thumbnail", "category", "get_categorylist", "like_cnt", "comments"]
         read_only_fields = ['like_cnt']
 
     def create(self, validated_data):

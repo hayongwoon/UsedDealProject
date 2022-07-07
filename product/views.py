@@ -32,23 +32,31 @@ class SingleProductApiView(APIView):
             return Response({"msg": "존재하지 않는 상품 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, obj_id):
+        user = request.user
         try:
             product = ProductModel.objects.get(id=obj_id)
-            print(product.user)
-            serializer = ProductSerializer(product, data=request.data ,partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+            if user == product.user: 
+                serializer = ProductSerializer(product, data=request.data ,partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
+                else:
+                    Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
             else:
-                Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"msg": "수정 권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         except ProductModel.DoesNotExist:
             return Response({"msg": "존재하지 않는 상품 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, obj_id):
+        user = request.user
         try:
-            ProductModel.objects.get(id=obj_id).delete()
-            return Response({"message":"상품이 삭제되었습니다."})
+            product = ProductModel.objects.get(id=obj_id)
+            if product.user == user:
+                product.delete()
+                return Response({"message":"상품이 삭제되었습니다."})
+            else:
+                return Response({"msg": "수정 권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         except ProductModel.DoesNotExist:
             return Response({"message":"이미 삭제 된 상품입니다."})
