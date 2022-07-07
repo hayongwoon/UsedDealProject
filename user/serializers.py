@@ -5,6 +5,8 @@ from user.models import User as UserModel
 from user.models import UserProfile as UserProfileModel
 from user.models import WatchList as WatchListModel
 from product.models import Product as ProductModel
+from product_like.models import Like as LikeModel
+from success_deal.models import SuccessDeal as SuccessDealModel
 
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import authenticate
@@ -124,4 +126,22 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
 
-        fields = ["title", "content", "thumbnail", "category", "like_cnt"]
+        fields = ["title", "content", "thumbnail", "category", "like_cnt", "is_active"]
+
+
+class LikedProductByUserSerialzer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
+    class Meta:
+        model = LikeModel
+
+        fields = ["product"]
+
+
+class PurchasedProductByUserSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
+    class Meta:
+        model = SuccessDealModel
+
+        fields = ["product"]
