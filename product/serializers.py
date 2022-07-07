@@ -26,8 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
     def get_user_reliability_avg(self, obj):
         reviews = obj.deal_seller
         reviews_avg = reviews.aggregate(avg=Avg('rating'))["avg"]
-
-        return '{:.2f}'.format(reviews_avg)
+        if reviews_avg:
+            return '{:.2f}'.format((reviews_avg + obj.deal_reliability_avg)/2)
+        else:
+            return obj.deal_reliability_avg
 
     class Meta:
         model = UserModel
@@ -63,8 +65,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
         # product 객체 생성
         product = ProductModel(**validated_data)
-        # product.user = self.context["request"].user
-        product.user = UserModel.objects.get(id=16) #test user
+        product.user = self.context["request"].user
+
         product.save()
 
         product.category.add(*get_categorylist)

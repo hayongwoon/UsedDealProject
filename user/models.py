@@ -39,7 +39,7 @@ class User(AbstractBaseUser):
     join_date = models.DateTimeField("가입일", auto_now_add=True)
 
     # 거래 후 구매자는 판매자에게 거래 신뢰도 점수를 줄 수 있고, 5점 만점에 소숫점 1번째 자리까지 나타낸다.
-    deal_reliability_avg = models.DecimalField("거래 신뢰도", max_digits=3, decimal_places=2, default=5)
+    deal_reliability_avg = models.IntegerField("거래 신뢰도", default=5)
 
     # default가 있는 경우, Post시리얼라이즈에서는 필드에서 제외한다.
     is_active = models.BooleanField(default=True) 
