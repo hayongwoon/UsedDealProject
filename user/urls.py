@@ -1,6 +1,6 @@
 from django.urls import path
 
-from user.views import CreateUserApiView, UserLoginView, UserSellingListApiView, UserProfileApiVeiw, UserPurchaseListApiView, UserLikeListApiView
+from user.views import CreateUserApiView, UserLoginApiView, UserSellingListApiView, UserProfileApiVeiw, UserPurchaseListApiView, UserLikeListApiView, UserLogoutApiView
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -12,9 +12,10 @@ urlpatterns = [
     path('signup/', CreateUserApiView.as_view()),
 
     # 로그인 -> post
-    path('login/', UserLoginView.as_view()),
+    path('login/', UserLoginApiView.as_view()),
 
     # 로그아웃 - logout/ -> post
+    path('logout/', UserLogoutApiView.as_view()),
 
     # 프로필 - <user_id>/profile/  -> put, get, delete
     path('<user_id>/profile/', UserProfileApiVeiw.as_view()),
