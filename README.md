@@ -1,6 +1,7 @@
 # 중고 거래 PROJECT
 해당 플랫폼은 기존의 중고 거래 사이트와 유사합니다. 사용자는 중고 물품을 등록(게시)하여 구매자와 소통 후 직접 거래할 수 있게 하는 중계 플랫폼이며, 판매가 이루어진 후 판매자는 사용자에게 거래 완료 요청을 보낸다. 요청받은 구매자는 수락 후 판매자의 신뢰도 점수를 평가할 수 있다.
-단, 사용자의 거래 신뢰도 2점 밑으로는 상품 등록이 제한이 된다.
+단, 사용자의 거래 신뢰도 2점 밑으로는 상품 등록이 제한이 된다. 
+custom permission는 from rest_framework.permissions import IsRegisterdMoreThanTwoRliabilityPoint 를 통해 사용 가능합니다.
 
 **해당 링크를 통해 자세한 API 확인이 가능합니다. 
 link - https://hayongwoon.tistory.com/139
