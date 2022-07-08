@@ -1,12 +1,13 @@
 from django.shortcuts import render
 
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from success_deal.models import SuccessDeal as SuccessDealModel
 
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
+
+from success_deal.models import SuccessDeal as SuccessDealModel
 from user.serializers import UserSerializer, UserLoginSerializer, ProductSerializer, LikedProductByUserSerialzer, PurchasedProductByUserSerializer
 from user.models import User as UserModel
 
