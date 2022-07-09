@@ -20,6 +20,7 @@ class WatchListSerializer(serializers.ModelSerializer):
 
         fields = ["name"]
 
+
 class UserProfileSerializer(serializers.ModelSerializer):
     watchlist = WatchListSerializer(read_only=True, many=True)
     get_watchlist = serializers.ListField(write_only=True, required=False)
@@ -54,7 +55,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
 
         userprofile = UserProfileModel.objects.create(user=user, **userprofile)
-
         userprofile.watchlist.add(*get_watchlist)
         userprofile.save()
 
@@ -63,7 +63,8 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         userprofile = validated_data.pop('userprofile')
         get_watchlist = userprofile.pop('get_watchlist', [])
-        
+
+        # 유저 객체 수정
         for key, value in validated_data.items():
             if key == "password":
                 instance.set_password(value)
@@ -72,11 +73,16 @@ class UserSerializer(serializers.ModelSerializer):
             setattr(instance, key, value)
         instance.save() 
 
-        userprofile_id = UserProfileModel.objects.filter(user=instance).update(**userprofile)
-        userprofile = UserProfileModel.objects.get(id=userprofile_id)
+        # 유저 프로필 객체 수정
+        profile = instance.userprofile
+        for key, value in userprofile.items():
+            setattr(profile, key, value)
 
-        userprofile.watchlist.set(get_watchlist)
-        userprofile.save()
+        profile.save()
+
+        # 유저 프로필의 관심목록 수정
+        profile.watchlist.set(get_watchlist)
+        profile.save()
 
         return instance
 
@@ -98,7 +104,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
         password = data.get("password", None)
 
         user = authenticate(username=username, password=password)
-        print(user)
         if user is None:
             return {
                 'username': 'None'
