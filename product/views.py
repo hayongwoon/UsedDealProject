@@ -6,10 +6,13 @@ from rest_framework import status
 
 from product.serializers import ProductSerializer
 from product.models import Product as ProductModel
+from product.permissions import IsRegisterdMoreThanTwoRliabilityPoint
 
 
 # Create your views here.
 class ProductApiView(APIView):
+    permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
+
     def post(self, request):
         serializer = ProductSerializer(data=request.data, context={'request': request}, partial=True)
         if serializer.is_valid():
@@ -23,6 +26,8 @@ class ProductApiView(APIView):
 
 
 class SingleProductApiView(APIView):
+    permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
+
     def get(self, request, obj_id):
         try:
             product = ProductModel.objects.get(id=obj_id)
@@ -32,32 +37,24 @@ class SingleProductApiView(APIView):
             return Response({"msg": "존재하지 않는 상품 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, obj_id):
-        user = request.user
         try:
             product = ProductModel.objects.get(id=obj_id)
-            if user == product.user: 
-                serializer = ProductSerializer(product, data=request.data ,partial=True)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
-                else:
-                    Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+            serializer = ProductSerializer(product, data=request.data ,partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_206_PARTIAL_CONTENT)
             else:
-                return Response({"msg": "수정 권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
+                Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+            
         except ProductModel.DoesNotExist:
             return Response({"msg": "존재하지 않는 상품 입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, obj_id):
-        user = request.user
         try:
             product = ProductModel.objects.get(id=obj_id)
-            if product.user == user:
-                product.delete()
-                return Response({"message":"상품이 삭제되었습니다."})
-            else:
-                return Response({"msg": "수정 권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
-
+            product.delete()
+            return Response({"message":"상품이 삭제되었습니다."})
+            
         except ProductModel.DoesNotExist:
             return Response({"message":"이미 삭제 된 상품입니다."})
 
