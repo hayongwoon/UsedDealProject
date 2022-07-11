@@ -6,7 +6,7 @@ from rest_framework import status
 
 from product.serializers import ProductSerializer
 from product.models import Product as ProductModel
-from product.permissions import IsRegisterdMoreThanTwoRliabilityPoint
+from core.permissions import IsRegisterdMoreThanTwoRliabilityPoint
 
 
 # Create your views here.
@@ -54,7 +54,7 @@ class SingleProductApiView(APIView):
             product = ProductModel.objects.get(id=obj_id)
             product.delete()
             return Response({"message":"상품이 삭제되었습니다."})
-            
+
         except ProductModel.DoesNotExist:
             return Response({"message":"이미 삭제 된 상품입니다."})
 
