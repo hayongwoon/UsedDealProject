@@ -8,9 +8,13 @@ from product_comment.serializers import CommentSerializer, ProductCommentSeriali
 from user.models import User as UserModel
 from product.models import Product as ProductModel
 from product_comment.models import Comment as CommentModel
+from core.permissions import IsRegisterdMoreThanTwoRliabilityPoint
+
 
 # Create your views here.
 class ProductCommentApiView(APIView):
+    permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
+
     # 댓글 생성
     def post(self, request, product_id):
         serializer = CommentSerializer(data=request.data, context={'request':request, 'product_id':product_id}, partial=True)
@@ -32,6 +36,8 @@ class ProductCommentApiView(APIView):
 
 
 class SingleProductCommentApiView(APIView):
+    permission_classes = [IsRegisterdMoreThanTwoRliabilityPoint]
+
     # 단일 댓글 조회
     def get(self, request, product_id, obj_id):
         try:
