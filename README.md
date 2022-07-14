@@ -23,10 +23,12 @@ https://hayongwoon.tistory.com/139
 
 
 ## VEIW
+- core
+    - permissions.py: IsRegisterdMoreThanTwoRliabilityPoint(거래 신뢰도 2점 보다 높고 로그인 된 유저)
+
 - user
     - JWT 방식의 로그인 기능
     - 로그아웃은 토큰 블랙리스트 모델에 토큰을 추가하는 방식
-    - Permission은 사용자의 신뢰도 점수에 따라 커스텀 
 
 - product
     - 상품 등록, 상품 조회(등록 순), 상품 삭제, 상품 업데이트
